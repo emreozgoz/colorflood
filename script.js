@@ -167,9 +167,9 @@ function loadProgress() {
     // Apply theme on load
     applyTheme(currentTheme);
 
-    // DEBUG: Add 1000 coins every time for testing per user request
-    coins += 1000;
-    saveProgress(); // Save ensuring they persist if reloaded again, acts as accumulating
+    // DEBUG: Add 1000 coins logic removed for release
+    // coins += 1000; 
+    saveProgress(); // Ensure valid structure on first load
 
     updateCoinDisplays();
 }
