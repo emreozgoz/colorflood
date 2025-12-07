@@ -34,14 +34,28 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
-      - name: Build APK (Debug)
+      - name: Generate Keystore
+        run: |
+          keytool -genkey -v -keystore release.keystore -alias colorflood -keyalg RSA -keysize 2048 -validity 10000 -storepass colorflood123 -keypass colorflood123 -dname "CN=ColorFlood, OU=Game, O=Emre, L=Istanbul, S=Istanbul, C=TR"
+
+      - name: Build Release Bundle
         working-directory: ./android
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew bundleRelease
 
-      - name: Upload APK
+      - name: Sign Release Bundle
+        run: |
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore release.keystore -storepass colorflood123 -keypass colorflood123 android/app/build/outputs/bundle/release/app-release.aab colorflood
+
+      - name: Upload Release Bundle (.aab)
         uses: actions/upload-artifact@v4
         with:
-          name: Color-Flood-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: release-bundle-aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
+
+      - name: Upload Keystore (SAVE THIS)
+        uses: actions/upload-artifact@v4
+        with:
+          name: critical-keystore-file
+          path: release.keystore
