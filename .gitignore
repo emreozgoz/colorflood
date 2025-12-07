@@ -1,0 +1,18 @@
+# Node
+node_modules/
+npm-debug.log
+
+# Capacitor
+www/
+
+# Android
+android/.gradle/
+android/app/build/
+android/build/
+android/.idea/
+android/local.properties
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
