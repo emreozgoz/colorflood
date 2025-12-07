@@ -34,9 +34,8 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
-      - name: Generate Keystore
-        run: |
-          keytool -genkey -v -keystore release.keystore -alias colorflood -keyalg RSA -keysize 2048 -validity 10000 -storepass colorflood123 -keypass colorflood123 -dname "CN=ColorFlood, OU=Game, O=Emre, L=Istanbul, S=Istanbul, C=TR"
+      # - name: Generate Keystore (DISABLED - Using committed file)
+      #   run: keytool ... 
 
       - name: Build Release Bundle
         working-directory: ./android
@@ -45,6 +44,7 @@ jobs:
           ./gradlew bundleRelease
 
       - name: Sign Release Bundle
+        # Keystore is now in the root of the repo (checked out)
         run: |
           jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore release.keystore -storepass colorflood123 -keypass colorflood123 android/app/build/outputs/bundle/release/app-release.aab colorflood
 
@@ -53,9 +53,6 @@ jobs:
         with:
           name: release-bundle-aab
           path: android/app/build/outputs/bundle/release/app-release.aab
+      
+      # Keystore is already in repo, no need to upload artifact
 
-      - name: Upload Keystore (SAVE THIS)
-        uses: actions/upload-artifact@v4
-        with:
-          name: critical-keystore-file
-          path: release.keystore
